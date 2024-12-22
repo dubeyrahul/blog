@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rahul Dubey">
+<meta name="dcterms.date" content="2020-07-25">
+
+<title>Feature Store: an essential part of ML infrastructure – Rahul Dubey’s Blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Rahul Dubey’s Blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://linkedin.com/in/dubeyrahul"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Feature Store: an essential part of ML infrastructure</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">ml</div>
+                <div class="quarto-category">feature-store</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rahul Dubey </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 25, 2020</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#production-ml-systems" id="toc-production-ml-systems" class="nav-link active" data-scroll-target="#production-ml-systems">Production ML systems:</a></li>
+  <li><a href="#feature-store" id="toc-feature-store" class="nav-link" data-scroll-target="#feature-store">Feature Store</a>
+  <ul>
+  <li><a href="#feature-consistency" id="toc-feature-consistency" class="nav-link" data-scroll-target="#feature-consistency">Feature Consistency</a></li>
+  <li><a href="#time-travel" id="toc-time-travel" class="nav-link" data-scroll-target="#time-travel">Time travel</a></li>
+  <li><a href="#feature-engineering" id="toc-feature-engineering" class="nav-link" data-scroll-target="#feature-engineering">Feature Engineering</a></li>
+  <li><a href="#reusable-dataset" id="toc-reusable-dataset" class="nav-link" data-scroll-target="#reusable-dataset">Reusable Dataset:</a></li>
+  <li><a href="#online-serving" id="toc-online-serving" class="nav-link" data-scroll-target="#online-serving">Online serving</a></li>
+  <li><a href="#metadata-management" id="toc-metadata-management" class="nav-link" data-scroll-target="#metadata-management">Metadata management</a></li>
+  <li><a href="#data-governance" id="toc-data-governance" class="nav-link" data-scroll-target="#data-governance">Data governance</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>In this post, I’ll talk about <code>Feature Store</code>: an essential component of a modern Machine Learning infrastructure. We’ll first briefly look at what a production ML system consists of and where does a Feature Store fit into it. I’ll then dive into some core problems that a Feature Store is supposed to solve and go over some possible solutions to these problems. A combination of these solutions essentially builds up a Feature Store infrastructure.</p>
+<section id="production-ml-systems" class="level3">
+<h3 class="anchored" data-anchor-id="production-ml-systems">Production ML systems:</h3>
+<p>First, let’s see what differentiates a real-world production ML systems with ML research prototypes, Kaggle based machine learning competitions, and the projects in ML courses. The distinction is best summarized in the diagram below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ML_system.png" class="img-fluid figure-img"></p>
+<figcaption>ML systems</figcaption>
+</figure>
+</div>
+<p>As we can see, the part where actual ML modeling happens (indicated with <code>ML Code</code>) is a tiny portion of a much larger system. Traditionally, in college courses and online MOOCs a large emphasis is placed on <code>ML Code</code>. I think the primary reason is that it is difficult to teach and assess some of the other skills shown in the diagram. However, the other boxes make up most of what a production-grade ML system looks like.</p>
+<p>If Machine Learning is a major aspect of your business, then having a strong infrastructure around your <code>ML Code</code> is must. I like to compare it to traditional large scale software systems where it is a must to have a version-controlled code base, CI/CD pipelines, compute and data infrastructure support, etc. for engineers to be effective and for your technical pillar to be strong.</p>
+<p>Since ML is a relatively new software paradigm, a lot of the support around ML systems is either missing or is still developing. As mentioned by Andrej Karpathy in his <a href="https://www.youtube.com/watch?v=y57wwucbXR8">talk</a>, we need to build a new software stack for AI and ML, and managing data/features (in addition to code) is a big aspect of this new stack.</p>
+<p>In this post, I want to dive into a specific piece of infrastructure that deals with features: the data that helps you build your ML models and make your ML products successful. At least when it comes to structured data, a large part of ML use-cases is designing good features for your models. However, it doesn’t stop at that. If you are running a business on machine learning, then you want to know the following about your features: - is it available offline for Training and online for Serving - how does one read/load features offline and online - is there consistency between offline and online computations - how good is the quality of features - who is producing these features - who is consuming these features - are there SLAs around some/all of these features - how does one team discover features created by other</p>
+<p>There are many more such questions that need to be answered about the data goes into your ML models, and the models that power your business. Hence, there is a need for good tooling and infrastructure around features. <code>Feature Store</code> is a relatively new infrastructure solution to answer these questions. Though there are not a lot of mainstream solutions out there, big tech companies in ML space have built some custom infrastructure for this.</p>
+<p>Note: There are now companies like <a href="tecton.ai">Tecton</a> and <a href="hopsworks.ai">Hopsworks</a> who offer end-to-end enterprise grade solutions.</p>
+</section>
+<section id="feature-store" class="level3">
+<h3 class="anchored" data-anchor-id="feature-store">Feature Store</h3>
+<p>From the name it may seem like, we are building a data-store that stores our features, but it is much more than that. Below is a slide taken from <a href="https://www.youtube.com/watch?v=ZXkra9jiCU0">Tecton’s talk</a> to highlight (red boxes) the components that a good feature store will manage. <img src="Feature_store_in_ML_systems.png" class="img-fluid" alt="ML systems"></p>
+<p>For e.g.&nbsp;<code>Serving Infrastructure</code> consists of not just the model that is being served but also the features or feature-transformation logic.</p>
+<p><code>Feature Store</code> is thus not just a database for you to store and retrieve your features from. It is also the infrastructure to: create those features, manage metadata around the features, make features discoverable, make it shareable, make it consistently available offline and online, monitor the quality of the features, and in some cases even provide consistent API for performing feature engineering.</p>
+<p>Now that we know what a feature store is roughly supposed to do, let’s dive into some core problems that Data scientists (DS) and Machine Learning Engineers (MLE) face and how a good <code>Feature Store</code> can solve those problems.</p>
+<section id="feature-consistency" class="level4">
+<h4 class="anchored" data-anchor-id="feature-consistency">Feature Consistency</h4>
+<p>Feature consistency affects the ML use-cases where predictions are made in real-time, i.e.&nbsp;the predictions are not pre-computed, cached, and served as is without any computation at request time. In real-time serving, we get some request, extract features based on the request, feed it into the model and return the prediction. A fair number of business-driving production use-cases such as: CTR prediction, Search Ranking, Home Feed Ranking, Transaction Fraud Prediction, etc. fall under real-time serving use-case, so this is definitely a problem worth solving. Wait, what exactly is the problem here?</p>
+<p>When a DS/MLE builds a model to solve a problem (e.g.&nbsp;CTR prediction), the process usually looks like this: 1. Get data from Data-warehouse or Datalake 2. Do feature engineering: transform your strings to one-hot, compute historical aggregates and so on (usually done in Python-based-stack: Pandas, NumPy, PySpark) 3. Train your model on these features, evaluate for quality 4. Make it available for serving</p>
+<p>At serving time, you don’t have this full-fledged feature-vector ready, so how does one do feature-engineering/transformation online right before you feed your feature-vector to your model to make prediction. Where does that feature-engineering code live? DS/MLE wrote their feature engineering logic in Python in their notebook but how does it translate to your low-latency Java service? Let’s see some options.</p>
+<p><strong>Option 1: Duplicate the code</strong></p>
+<p>We can duplicate the code between offline training and online serving systems. Some companies do this by structuring ML teams such that DS write feature engineering code in Python in notebooks, MLE write the same code in Java for serving. In my opinion, this is quite risky especially if your training and serving environments are different (Python v/s Java). Moreover, it’s just bad practice to have duplicate code in different systems having to do the same thing. In addition to that, it’s really difficult to make sure that the computation between offline and online systems are exactly the same. A common way in which this problem surfaces is when your model performs really well offline but does poorly online. A good place to investigate this is to look at the features computed online. Having a good monitoring system to measure offline/online feature-drift also helps, though it doesn’t solve the core problem of having duplicated logic in 2 places in your ML system.</p>
+<p><strong>Option 2: Shared library for computation</strong></p>
+<p>Here, we do not have duplicate code but have a shared library that performs feature engineering. This is doable if your training and serving systems <em>can</em> use the same runtime environment. This becomes tricky with Pandas/NumPy based feature engineering (unless your serving system is in Python). However, this can be done if you use PySpark for feature engineering. PySpark being just a wrapper on top of Scala-Spark essentially performs computations on the JVM. So if your online low-latency serving system is in Java or other JVM-based system, this is a reasonable solution to feature consistency problem. This is what we do at Yelp for our Ads-targeting ML system. For more details, you can check out my <a href="https://engineeringblog.yelp.com/2020/01/modernizing-ads-targeting-machine-learning-pipeline.html">blog on Yelp engineering</a></p>
+<p><strong>Option 3: One compute, Two DB</strong></p>
+<p>Here, we have features computed and loaded into an offline DW/Datalake as well as online database (such as Cassandra for high availability). This requires all features to be computed and stored in these data-stores. For training, we read from offline DB, for serving we read from online DB. There are two tricky aspects to this: 1. maintaining the two data stores in sync 2. making sure same computation logic computes features for both</p>
+<p>There’s also a limitation that when you have to add new features you’ve to do a massive backfill (usually manually) and make it available offline for training. This backfill is needed because usually a model is trained on large historical time window (like past 3 months).</p>
+<p>Most Feature Store infrastructure use this approach and solve the above-mentioned issues: shared computation logic and auto-backfills. Big tech companies in ML space (Facebook, Uber, Airbnb) have developed some sort of DSL for shared computation logic so developers don’t have to write the code twice, which is pretty neat. The DSLs are usually very domain and company specific so I am not sure how much of it can be widely adopted even if they open-source it.</p>
+<p>Airbnb via Zipline provides an efficient way to perform backfill for different types of aggregations. Check out <a href="https://www.youtube.com/watch?v=LjcKCm0G_OY">this video</a> for how they do it.</p>
+</section>
+<section id="time-travel" class="level4">
+<h4 class="anchored" data-anchor-id="time-travel">Time travel</h4>
+<p>That sounds like sci-fi but it basically means, given a point of time in the past, what was the value of this particular feature at that point of time. DS/MLE often need this to create their dataset where they use existing labels at different point in time and collect historical aggregates from past until this point-in-time to create the ML models. Getting this right is really important to avoid label leakage.</p>
+<p>This is often not available in traditional DB solutions unless for each schema that contains our features, we add an event-time column. And one can image this data growing to be super large to be stored in a traditional DB.</p>
+<p>A more appropriate solution in this case is storing your snapshot or changelogs partitioned by time on Datalake. So we can store all the updates partitioned by date/time and we can write Spark/SQL queries on top of it to answer question such as: what was the average rating given by this user from January 2020 to March 2020.</p>
+<p>Thankfully this is provided as ready-to-use solutions by <a href="https://aws.amazon.com/big-data/datalakes-and-analytics/">AWS</a> (using a bunch of AWS solutions such as S3, Glue, Athena, Kinesis), and <a href="https://docs.databricks.com/delta/index.html">Databricks Delta</a>. Delta can work on top of your existing Datalake (S3, Azure blog storage, HDFS) and provide good data management solution on top of it.</p>
+<p>A challenging aspect of this is to manage streaming data with change-logs on your datalake. Delta by Databricks provides a solution to this problem as well. One option is to not perform streaming updates, and run batch-incremental updates frequently on your changelogs, and this is usually good enough. For e.g.&nbsp;user’s last 90 days of historical aggregate (average 90 day CTR of a user) won’t change much every hour so it’s alright to do it on a snapshot once per day. However, if last 10 searches made by the user is important for your model then you need streaming updates.</p>
+</section>
+<section id="feature-engineering" class="level4">
+<h4 class="anchored" data-anchor-id="feature-engineering">Feature Engineering</h4>
+<p>This problem is very closely related to consistency problem, but this sits more close to DS/MLE rather than infrastructure folks. The problem is how to find a good set of libraries to do feature engineering and also have your feature definitions be consistent. For e.g.&nbsp;there are libraries such as Pandas and PySpark which DS/MLE use for feature engineering and these are pretty powerful, but they have their subtle differences which can go unnoticed. So if one DS is computing one-hot encoding in Pandas, that might differ from one-hot encoding done in PySpark. So how do we provide a single interface for all DS/MLE to do feature engineering.</p>
+<p><strong>Option 1: Provide a DSL</strong></p>
+<p>This is a considerable effort in my opinion, especially for small companies with a small engineering workforce, because it is partially reinventing the wheel. It has great returns (I believe) in the form of consistency between features, ease of use and deployment, ease of customization, improved iteration and development of new ML models. Big companies like Uber, Airbnb, Twitter have taken this approach and it has paid off well for them. They have thousands of ML models running in production created by hundreds of engineers. It’s upto us to figure out whether this massive investment will pay off.</p>
+<p><strong>Option 2: Use a single feature-engineering library</strong></p>
+<p>This can be limiting: what if this one library is not enough for your feature engineering needs? And can this library be used for serving too? Some solution around this is to have your feature engineering library be in a language that can be used for serving and provide wrappers on top of it for interactive languages such as Python. I believe this is what Twitter does by providing wrappers on top of Scala (I am not a 100% sure).</p>
+<p><strong>Option 3: Shareable format and execution</strong></p>
+<p>If we can come up with a format and execution engine that can take my feature engineering pipeline written in Python using Scikit-learn and serialize it into a format that can be used by my realtime inference service (possibly JVM based), then this problem is solved!</p>
+<p>At Yelp, we have converged towards this solution. We don’t limit our DS/MLE to use a single library like Pandas or PySpark but any library/feature engineering transforms <strong>as long as they can be serialized</strong> into a shareable format: <a href="https://mleap-docs.combust.ml/">MLeap</a>. For more about Yelp’s ML platform, check out <a href="https://engineeringblog.yelp.com/2020/07/ML-platform-overview.html">this blog</a>. MLeap is relatively new but really powerful as it allows us to go between different training and serving environments and not limiting ourselves by having to use only one single library for feature engineering. It is also really fast as can be seen <a href="https://github.com/combust/mleap/tree/master/mleap-benchmark">here</a> in the benchmarks.</p>
+<p>There are caveats to this: not <em>all</em> transforms are available and serializable, but this is a growing community and I believe we’ll have a good range of feature engineering transforms available soon.</p>
+<p><a href="https://beam.apache.org/">Apache Beam</a> is also a solution in a similar vein that it decouples your computation logic (batch/streaming) with your serving environment by using a shareable Beam Model. I have not played around with this yet.</p>
+</section>
+<section id="reusable-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="reusable-dataset">Reusable Dataset:</h4>
+<p>Most of the use-cases we discussed above (CTR prediction, search ranking, homefeed ranking, fraud detection) have a shared underlying theme: the underlying data changes very often and hence you really need to retrain your models often. To reduce the time to retrain and deploy fresher models, an often used solution is to materialize your dataset with newly arriving data points regularly, and then let your training batch pick up newly created rows, train a new model, evaluate it against older model and go into production. This is different from having a generalized Feature Store since datasets are very domain specific: a dataset created for CTR prediction cannot be used for ranking search results. However, they can share some same features (say user’s preference towards an item category) from the generalized Feature Store infrastructure.</p>
+<p>Usually, long term cheap storage such as S3/HDFS is used to materialize datasets. It is also a good idea to materialize data in a format that’s suitable for your model-training library (TFRecord for Tensorflow, .npy for PyTorch, .h5 for Keras, parquet for Spark ML models).</p>
+</section>
+<section id="online-serving" class="level4">
+<h4 class="anchored" data-anchor-id="online-serving">Online serving</h4>
+<p>When DS/MLE train the models, their feature set usually comprises of hundreds of features taken from different DW/Datalake tables. But in the serving environment, a request consists of very basic information such as user_id, product_id, time_of_request, user’s platform (mobile/web), etc. The next important step is to hydrate this request to create a feature vector, in order to make predictions. This is where the online-feature-store comes in. It is usually keyed by your primary business entities (user, business, product) and consists of number of attributes/features about your entities using which you can create your feature vector. Sometimes additional transformation on top of these features is necessary. This is where <a href="#feature-engineering">Feature Engineering</a> comes into play. Finally, the feature-vector is then sent to the model to serve real-time predictions. Apache Cassandra is often used to store features for online retrieval due to high throughput, availability, and scalability. Some other popular choices are MySQL and MongoDB.</p>
+</section>
+<section id="metadata-management" class="level4">
+<h4 class="anchored" data-anchor-id="metadata-management">Metadata management</h4>
+<p>The whole point of building a shareable feature store is to: 1. reduce the duplication of effort and feature computation between teams 2. have consistent definition of features (user_7d_clicks means the same thing to all the teams).</p>
+<p>But how does one team discover features created by another? That’s where metadata management comes in. We need a system that manages metadata about our features and use this metadata to serve a web UI using which developers can discover and use existing features.</p>
+<p>In a way, we want to build a marketplace of features where teams can create/use features from other teams. And just like any other marketplace, we need some key pieces of attributes about the products of this market: features. Some important attributes to know are: - who produced this feature (who is responsible) - who are the consumers of this feature (how popular is this feature, which model/dashboard is this feature powering) - what is the SLA of this feature (offline and online) (what guarantees does it come with) - how often is this feature refreshed/updated (how well maintained is it) - data lineage (what upstream log/data does this feature use)</p>
+<p>In addition, we can build APIs on top of this metadata database to easily get and put features in the feature store.</p>
+</section>
+<section id="data-governance" class="level4">
+<h4 class="anchored" data-anchor-id="data-governance">Data governance</h4>
+<p>An often ignored aspect is data governance, i.e.&nbsp;having some security and monitoring layer on top of your features. Who has access to what should be controlled especially if you are a global business and working in environments with different restrictions (for e.g.&nbsp;using health data). This is also necessary to manage SI data.</p>
+<p>Some data governance solutions provide profiling and cataloging capabilities such that different governance policies can be applied to different levels of sensitive data. Regular audits, quality checks, and monitoring is also a part of data governance. Lastly, encryption, data masking, and deletion of some data can also an important aspect especially if these data can introduce harmful bias in your ML systems.</p>
+</section>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>This was a lot to take I imagine. But that’s because the problem of feature and data management in ML systems is not trivial. Above mentioned are only some of the main issues that slow down the iteration speed of organization to ship ML-based products. A well-maintained feature-store infrastructure comes a long way to shorten the ML lifecycle and make DS/MLE productive. It makes the life of DS/MLE easy by allowing them to focus on translating business use-cases to well-defined ML problems, perform feature engineering, build models, and deploy it without a lot of hassle.</p>
+<p>In this post, we saw some of these issues and briefly discussed some possible solutions as well. In the next post, I will dive into a couple of commercially available feature stores, and perhaps also discuss some in-house feature stores by Uber and Airbnb. We’ll see how these feature-stores try to solve the problems around managing ML data and analyze some trade-offs.</p>
+</section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ul>
+<li><a href="http://featurestore.org/">Feature Store website</a></li>
+<li><a href="https://www.hopsworks.ai/">Hopsworks: open source Feature Store</a></li>
+<li><a href="https://www.tecton.ai/">Tecton.AI: commercial Feature Store</a></li>
+<li><a href="https://engineeringblog.yelp.com/2020/07/ML-platform-overview.html">Yelp ML Platform</a></li>
+<li><a href="https://engineeringblog.yelp.com/2020/01/modernizing-ads-targeting-machine-learning-pipeline.html">Yelp Ads ML Infrastructure for feature consistency</a></li>
+<li><a href="https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf">Google’s paper on hidden technical debt in ML systems</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/dubeyrahul\.github\.io\/dubeyrahul\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
