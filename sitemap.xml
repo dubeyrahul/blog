@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dubeyrahul.github.io/dubeyrahul/about.html</loc>
+    <loc>https://dubeyrahul.github.io/about.html</loc>
     <lastmod>2024-12-22T06:03:25.677Z</lastmod>
   </url>
   <url>
-    <loc>https://dubeyrahul.github.io/dubeyrahul/posts/effective-python-1/2019-08-03-writing-pythonic-code.html</loc>
+    <loc>https://dubeyrahul.github.io/posts/effective-python-1/2019-08-03-writing-pythonic-code.html</loc>
     <lastmod>2024-12-22T06:03:25.679Z</lastmod>
   </url>
   <url>
-    <loc>https://dubeyrahul.github.io/dubeyrahul/posts/effective-python-2/2019-08-04-writing-effective-python-code.html</loc>
+    <loc>https://dubeyrahul.github.io/posts/effective-python-2/2019-08-04-writing-effective-python-code.html</loc>
     <lastmod>2024-12-22T06:03:25.679Z</lastmod>
   </url>
   <url>
-    <loc>https://dubeyrahul.github.io/dubeyrahul/posts/feature-store/2020-07-25-feature-stores.html</loc>
+    <loc>https://dubeyrahul.github.io/posts/feature-store/2020-07-25-feature-stores.html</loc>
     <lastmod>2024-12-22T06:03:25.680Z</lastmod>
   </url>
   <url>
-    <loc>https://dubeyrahul.github.io/dubeyrahul/index.html</loc>
+    <loc>https://dubeyrahul.github.io/index.html</loc>
     <lastmod>2024-12-22T06:03:25.678Z</lastmod>
   </url>
 </urlset>
