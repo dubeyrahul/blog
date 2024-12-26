@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/llm-from-scratch/token-embeddings.html",
       "/posts/feature-store/2020-07-25-feature-stores.html",
       "/posts/effective-python-2/2019-08-04-writing-effective-python-code.html",
       "/posts/effective-python-1/2019-08-03-writing-pythonic-code.html"

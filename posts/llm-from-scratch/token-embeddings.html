@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Rahul Dubey">
+<meta name="dcterms.date" content="2024-12-25">
 
-<title>Posts – Rahul Dubey’s Blog</title>
+<title>LLMs Part 1: Token Embeddings – Rahul Dubey’s Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +25,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4968d28af72d4e5a34172c9bc5ef961b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-4968d28af72d4e5a34172c9bc5ef961b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,67 +68,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -138,7 +80,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Rahul Dubey’s Blog</span>
     </a>
   </div>
@@ -149,7 +91,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -172,185 +114,116 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">Posts</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">LLMs Part 1: Token Embeddings</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">ml</div>
+                <div class="quarto-category">deep-learning</div>
+                <div class="quarto-category">llm</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rahul Dubey </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">December 25, 2024</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="ZGVlcC1sZWFybmluZw==">deep-learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZmVhdHVyZS1zdG9yZQ==">feature-store <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bGxt">llm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bWw=">ml <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cHl0aG9u">python <span class="quarto-category-count">(2)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link active" data-scroll-target="#tokenization">Tokenization</a></li>
+  <li><a href="#mapping-to-token-ids" id="toc-mapping-to-token-ids" class="nav-link" data-scroll-target="#mapping-to-token-ids">Mapping to Token IDs</a></li>
+  <li><a href="#special-context-tokens" id="toc-special-context-tokens" class="nav-link" data-scroll-target="#special-context-tokens">Special context tokens</a></li>
+  <li><a href="#byte-pair-encoding" id="toc-byte-pair-encoding" class="nav-link" data-scroll-target="#byte-pair-encoding">Byte pair encoding</a></li>
+  <li><a href="#generate-token-dataset-for-gpt-style-model" id="toc-generate-token-dataset-for-gpt-style-model" class="nav-link" data-scroll-target="#generate-token-dataset-for-gpt-style-model">Generate token dataset for GPT-style model</a></li>
+  <li><a href="#generate-token-embeddings" id="toc-generate-token-embeddings" class="nav-link" data-scroll-target="#generate-token-embeddings">Generate Token Embeddings</a></li>
+  <li><a href="#generate-position-embeddings" id="toc-generate-position-embeddings" class="nav-link" data-scroll-target="#generate-position-embeddings">Generate Position Embeddings</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
+<p>In this post, I am diving deep into token embeddings. LLMs like any other ML model cannot process raw-text directly. The process with which we convert raw-text into acceptable format (i.e.&nbsp;vector of numbers) is loosely called tokenization. Once tokenized, LLMs learn contextual embeddings for these tokens. We learn embeddings as part of LLM pre-training because doing so makes embeddings optimized for the specific data and learning task. The same concept applies to other data formats: audio, video, etc.</p>
+<p>We perform this conversion in following steps: 1. Tokenization 2. Mapping to Token IDs 3. Adding special context tokens 4. Byte-pair encoding 5. Generate token dataset for GPT-style model 6. Token Embedding 7. Position Embedding</p>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
+<p>A simple way to do this is to use some kind of regex expression to split your text into individual words. A lot of design decisions come into play here, for example: - do we keep text case sensitive? - Might be good if your LLM is supposed to generate case sensitive text - do we keep and encode whitespace characters? - Might be good if your LLM is used for applications where whitespace generation is important: Python code generation - do we want to keep punctuation? - Might be good if your LLM is used for expressive text generation but maybe not if you are doing simpler tasks like text classification</p>
+<p>If we use both cases, whitespaces, punctuation, etc. we increase computational complexity but get more expressability in our tokens. In most modern NLP approaches (with LLMs), we keep all characters (rather we algorithmically decide using sub-words: more details later in this post)</p>
+<p>After we tokenize the data, we typically end up with more words than if we had just split by whitespaces. Ok, so now instead of a single string we have a list of strings, but this is not acceptable to LLMs either, so we now generate an identifier for each token.</p>
+</section>
+<section id="mapping-to-token-ids" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-to-token-ids">Mapping to Token IDs</h2>
+<p>Essentially, we find all the unique tokens and assign them an integer ID to generate a <code>map</code> from token (str) -&gt; tokenID (int). We also want to keep a <code>reverse-map</code> of this so that we can map IDs back into tokens. The size of this mapping defines the “vocabulary size”. Vocabulary size is the number of unique tokens that your LLM can generate. Tokenizer is now capable of 1) encoding: converting a string to a list of tokenIDs using a vocabulary and 2) decoding: converting a list of tokenIDs into list of tokens and subsequently a string. Since, we are working with <code>map</code>, one obvious question is what happens if we a Key does not exist in the map. What this means in our tokenization context is what if we get a string that our Tokenizer has not seen before? It won’t be able to convert it to TokenID, and hence it will fail to tokenize any text with words/strings it has not seen before. Similar to how we handle unknown keys in <code>map</code>, we can come up with some <code>default</code> value for unknown keys.</p>
+</section>
+<section id="special-context-tokens" class="level2">
+<h2 class="anchored" data-anchor-id="special-context-tokens">Special context tokens</h2>
+<p>Special context tokens are essentially a catch-all to cover our corner cases (like mentioned above) and to provide LLM further assistance in text generation and understanding. For example, we can add an <code>&lt;unk&gt;</code> token to our vocabulary which acts as as a default value when our tokenizer seens an unknown token. Another common token is <code>&lt;eos&gt;</code> to denote end of sequence (or rather to indicate to LLM that it can stop generating text) It is useful when giving LLMs multiple sentences/documents that are unrelated. Some other common special context tokens are: <code>&lt;bos&gt;</code>: beginning of a new sequence and <code>&lt;pad&gt;</code> to denote that these are just padding to fit the batch size during training.</p>
+<p>We basically add these special tokens to our vocabulary <code>map</code> and <code>reverse-map</code> and now our tokenizer is ready to tokenize any string! The downside of our existing tokenizer is the following: - It is terrible at unseen words. For example, if “come” is in our vocabulary but “coming” is not, there’s no way for our tokenizer to encode “coming” even though it is very closely related to a known token “come”. So all unseen words become <code>&lt;unk&gt;</code>, even if we have closely related words in the vocabulary - Our tokenizer relies on splitting over whitespace which works fine for English but not for all languages</p>
+</section>
+<section id="byte-pair-encoding" class="level2">
+<h2 class="anchored" data-anchor-id="byte-pair-encoding">Byte pair encoding</h2>
+<p>Byte pair encoding, commonly called BPE is a subword-based tokenization scheme. On a high level, this is what it does: 1. Split words into individual characters (unigrams) 2. Merge commonly occurring pair of adjacent characters into new tokens 3. Repeat 2 until some stop condition like size of vocabulary or frequency cut-off So, instead of word-based tokenization which is what we discussed earlier, we get “sub-word” based tokenization. Conceptually: <code>character &lt; sub-word &lt; word</code>. The subword based tokenization does not split frequently occurring words but instead splits rarely occurring words. So “toy” may remain as a token but “toys” is split into “toy” and “s”. So, now when our tokenizer seens an unknown word while encoding, it splits into into tokens it has seen before. For e.g.&nbsp;if we are trying to tokenize a word: “absobloodylutely”, it might break it up into <abso>, <bloody>, <lutely> subword tokens (assuming these 3 are present in the vocabularly generated by BPE tokenizer).</lutely></bloody></abso></p>
+<p>TODO: I’ll dive into BPE and sub-word tokenization is discussed in a separate blog post.</p>
+</section>
+<section id="generate-token-dataset-for-gpt-style-model" class="level2">
+<h2 class="anchored" data-anchor-id="generate-token-dataset-for-gpt-style-model">Generate token dataset for GPT-style model</h2>
+<p>Before we go about creating embeddings for token, we need a way to create a “task” that will serve to create these embeddings. How GPT-style decoders typically go about doing so is some sort of variation of next-token prediction. So, we have a sentence: “I am a writer” in our text corpus. We can create training samples with &lt;data, label&gt; pair like below: - <code>[I]</code>, <code>am</code> - <code>[I, am]</code>, <code>a</code> - <code>[I, am, a]</code>, <code>writer</code> So essentially, we have to employ a sliding window approach through our corpus and create these pairs. One common design choice is what is the maximum length of my feature-vector. This is called the context-length. Higher context-length means more memory/compute needed during training as well as inference. However, the LLM can process and reason through a much longer piece of text, i.e.&nbsp;it can understand more context. Shorter context length could work if you are creating very targeted use-case like sentiment analysis of product reviews where reviews are short and the label generated is also just a sentiment label. Most GPT-style/decoder-style LLM models come with massive context length so that they are are as powerful as possible. To do this in practice, we can create a Dataset and DataLoader class in PyTorch. Dataset would convert our text into tokens using a tokenizer and create input_ids and target_ids by shifting the sliding window till it reaches a size of <code>context_length</code>. So, now our dataset looks like a row of tensors where our input_ids look like: <code>[30,23,1000,12]</code> and target_ids look like: <code>[23,1000,12,6]</code> (see how we set stride of 1 here).</p>
+</section>
+<section id="generate-token-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="generate-token-embeddings">Generate Token Embeddings</h2>
+<p>To go from a list of tokenIDs to a list of token embeddings, we have to create an Embedding matrix of shape [vocab_size, embedding_size] where embedding_size is a design choice. Larger embedding_size means more compute/memory required but we also get a more powerful model. If we look at the shape of the Embedding matrix, we can say that each token is represented by a vector of size <code>embedding_size</code> and this Embedding matrix is basically a look-up table to go from token-id to a token-embedding. But instead of doing a naive one-hot encoding lookup, we do a lookup over a continuous space of <code>embedding_size</code>. This matrix is initialized randomly and is learned during the process of LLM pre-training.</p>
+<p>We should be done now, right? We started with a piece of text, cleaned it, tokenized it into subword based tokens, and now we have a vector representation that can be fed into a neural network. But, there’s a crucial piece missing. Modern transformer based LLMs are based on attention-mechanism. This attention mechanism works on tokens independently as in it does not have a notion of position of tokens in a piece of text. So, if a token 22 appears in text, it will always be mapped to the same embedding irrespective of where it appeared in the sequence.</p>
+<p>To get around this shortcoming, <code>position embeddings</code> were introduced.</p>
+</section>
+<section id="generate-position-embeddings" class="level2">
+<h2 class="anchored" data-anchor-id="generate-position-embeddings">Generate Position Embeddings</h2>
+<p>There are 2 categories of position embeddings: absolute and relative. Absolute position embeddings are defined by exact position of the token. So, any token at first position always gets the same position embedding irrespective of how long is the sequence. Relative position embeddings depend on a token’s position w.r.t other tokens in the sequence, i.e.&nbsp;distance between tokens in a sequence. So the model learns how far apart are certain tokens rather than where exactly a token is situated. So relative works pretty well with varying size sequences and sequence lengths that are unseen in training. For absolute position embedding, the shape of this matrix would be <code>[context_length, embedding_size]</code>. Note that the input to position embedding layer is essentially a placeholder vector containing each position from 0 to <code>context_length</code>. Position embeddings can also be learned during training process, this is how it works in GPT models. T5 model uses relative position embedding whereas GPT/LLama use a Rotation based absolute position embedding.</p>
+<p>Finally, to create the input embeddings we add token embeddings and position embeddings!</p>
+<pre><code>text -&gt; token IDs -&gt; token_embedding
+[0,...,context_length] -&gt; position_embedding
+input_embedding = token_embedding + position_embedding</code></pre>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<ul>
+<li>LLMs like any other NNs need numbers to work with, so we need to convert text to numbers</li>
+<li>We can split the text into subword based tokens</li>
+<li>Next, we learn a continuous representation for these tokens and call it token embedding</li>
+<li>Since attention based LLMs are position agnostic, we add a position embedding to token embedding to obtain the input embedding of a token</li>
+</ul>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="bWwlMkNkZWVwLWxlYXJuaW5nJTJDbGxt" data-listing-date-sort="1735113600000" data-listing-file-modified-sort="1735241735737" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1620">
-<div class="thumbnail">
-<p><a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external"></a></p><a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external">LLMs Part 1: Token Embeddings</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bWw='); return false;">
-ml
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('ZGVlcC1sZWFybmluZw=='); return false;">
-deep-learning
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('bGxt'); return false;">
-llm
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external">In this post, I am diving deep into token embeddings. LLMs like any other ML model cannot process raw-text directly. The process with which we convert raw-text into…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/llm-from-scratch/token-embeddings.html" class="no-external">
-<div class="listing-date">
-Dec 25, 2024
-</div>
-<div class="listing-author">
-Rahul Dubey
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="bWwlMkNmZWF0dXJlLXN0b3Jl" data-listing-date-sort="1595660400000" data-listing-file-modified-sort="1735149671113" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3068">
-<div class="thumbnail">
-<p><a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external"></a></p><a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external">
-<p class="card-img-top"><img src="posts/feature-store/ML_system.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external">Feature Store: an essential part of ML infrastructure</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('bWw='); return false;">
-ml
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('ZmVhdHVyZS1zdG9yZQ=='); return false;">
-feature-store
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external">In this post, I’ll talk about <code>Feature Store</code>: an essential component of a modern Machine Learning infrastructure. We’ll first briefly look at what a production ML system…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/feature-store/2020-07-25-feature-stores.html" class="no-external">
-<div class="listing-date">
-Jul 25, 2020
-</div>
-<div class="listing-author">
-Rahul Dubey
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="cHl0aG9u" data-listing-date-sort="1564902000000" data-listing-file-modified-sort="1735149671112" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2251">
-<div class="thumbnail">
-<p><a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external"></a></p><a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external">Writing Pythonic code: Part 2</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('cHl0aG9u'); return false;">
-python
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external">This is the second post (here’s the first) on writing Pythonic code. In this post, we will first go over some aspects of writing effective Python code by brushing over…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/effective-python-2/2019-08-04-writing-effective-python-code.html" class="no-external">
-<div class="listing-date">
-Aug 4, 2019
-</div>
-<div class="listing-author">
-Rahul Dubey
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="cHl0aG9u" data-listing-date-sort="1564815600000" data-listing-file-modified-sort="1735149671111" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1886">
-<div class="thumbnail">
-<p><a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external"></a></p><a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external">Writing Pythonic Code: Part 1</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('cHl0aG9u'); return false;">
-python
-</div>
-</div>
-<div class="listing-description">
-<a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external">This is the first of many Python related posts that I plan to write while studying how to write good Python code from the book Effective Python. In this post, we will go…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/effective-python-1/2019-08-03-writing-pythonic-code.html" class="no-external">
-<div class="listing-date">
-Aug 3, 2019
-</div>
-<div class="listing-author">
-Rahul Dubey
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
